@@ -38,11 +38,11 @@ export default function Layout() {
 
             {loginState.logado ?
               <>
-                <Header />
-                {/* <TopAppBar /> */}
+                {/* <Header /> */}
+                <TopAppBar />
                 <Outlet />
-                <Footer />
-                {/* <BottomAppBar /> */}
+                {/* <Footer /> */}
+                <BottomAppBar />
                 <Menu />
               </> :
               <>
