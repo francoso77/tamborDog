@@ -4,7 +4,7 @@ function Home() {
   return (
     <div>
       <h1>
-        oiiiii
+        Dash
       </h1>
     </div>
   );

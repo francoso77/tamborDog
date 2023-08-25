@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBrowserRouter } from 'react-router-dom';
-import Home from '../Home/Home';
+import Home from '../views/Home/Home';
 import ErroAplicacao from '../Layout/ErroAplicacao';
 import Person from '../views/Person/Person';
 import ErroNavegacao from '../Layout/ErroNavegacao';
@@ -27,6 +27,11 @@ export const router = createBrowserRouter([
       {
         path: "cao",
         element: <Cao />,
+        errorElement: <ErroAplicacao />
+      },
+      {
+        path: "home",
+        element: <Home />,
         errorElement: <ErroAplicacao />
       },
     ],

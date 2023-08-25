@@ -12,6 +12,8 @@ import { THEME } from '../Config/Theme';
 import Menu from './Menu';
 import Login from '../Login/Login';
 import Mensagem from '../Components/Mensagem/Mensagem';
+import BottomAppBar from './BottomAppBar';
+import TopAppBar from './TopAppBar';
 
 export default function Layout() {
 
@@ -37,8 +39,10 @@ export default function Layout() {
             {loginState.logado ?
               <>
                 <Header />
+                {/* <TopAppBar /> */}
                 <Outlet />
                 <Footer />
+                {/* <BottomAppBar /> */}
                 <Menu />
               </> :
               <>
