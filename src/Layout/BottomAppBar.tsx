@@ -56,23 +56,25 @@ export default function BottomAppBar() {
     setAnchorElUser(null);
   }
 
+  const fecharLoading = () => {
+    setMensagemState({ ...mensagemState, exibir: false })
+  }
+
   return (
     <React.Fragment>
       <Offset />
-      <AppBar position="fixed" color='transparent' sx={{ top: 'auto', bottom: 0 }}>
+      <AppBar onLoad={fecharLoading} position="fixed" color='default' sx={{ top: 'auto', bottom: 0 }}>
         <Toolbar>
-          <IconButton aria-label="Dashboard" id="Dashboard" onClick={() => irPara('Dash')}>
+          <IconButton color="primary" aria-label="Dashboard" id="Dashboard" onClick={() => irPara('Dash')}>
             <LeaderboardIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <Box sx={{ flexGrow: 0.25 }} />
-          <IconButton >
+          <IconButton color="primary">
             <SearchIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <StyledFab color="primary" aria-label="add">
-            <Tooltip title="Open Menu">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <AddIcon />
-              </IconButton>
+            <Tooltip title="Open Menu" onClick={handleOpenUserMenu} sx={{ p: 0 }} >
+              <AddIcon />
             </Tooltip>
           </StyledFab>
           <Menu
@@ -97,13 +99,12 @@ export default function BottomAppBar() {
               </MenuItem>
             ))}
           </Menu>
-
           <Box sx={{ flexGrow: 0.5 }} />
-          <IconButton >
+          <IconButton color="primary">
             <CalendarMonthIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <Box sx={{ flexGrow: 0.25 }} />
-          <IconButton >
+          <IconButton color="primary">
             <Avatar
               alt="Foto do Usuário"
               src="img/avatar.jpg"

@@ -66,13 +66,12 @@ export default function TopAppBar() {
   const { mensagemState, setMensagemState } = React.useContext(GlobalContext) as GlobalContextInterface
 
   const fecharLoading = () => {
-    console.log('entrou aqui')
     setMensagemState({ ...mensagemState, exibir: false })
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar onLoad={fecharLoading} color='transparent' >
+      <AppBar onLoad={fecharLoading} color='default' >
         <Toolbar>
           <IconButton
             size="large"
