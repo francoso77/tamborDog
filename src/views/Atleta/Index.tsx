@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
 import Button from '@mui/material/Button';
-import { Radio, FormControlLabel, RadioGroup, FormLabel, Avatar, Stack, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Avatar, Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, Typography } from '@mui/material';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import { CaoInterface } from '../../interfaces/CaoInterface';
+import { AtletaInterface } from '../../interfaces/AtletaInterface';
 import { GlobalContext, GlobalContextInterface } from '../../Context/GlobalContext';
 import { ActionInterface, actionTypes } from '../../interfaces/ActionInterface';
 import { MensagemTipo } from '../../Context/MensagemState';
@@ -21,14 +21,14 @@ interface PesquisaInterface {
   nome: string
 }
 
-export default function Cao() {
+export default function Atleta() {
 
   const api: ApiCls = new ApiCls()
   const validaCampo: ClsValidaCampo = new ClsValidaCampo()
 
   const Cabecalho: Array<DataTableCabecalhoInterface> = [
     {
-      campo: 'idCao',
+      campo: 'idAtleta',
       cabecalho: 'Id',
       alinhamento: 'left'
     },
@@ -38,9 +38,9 @@ export default function Cao() {
       alinhamento: 'left'
     },
     {
-      campo: 'categoria',
-      cabecalho: 'Categoria',
-      alinhamento: 'left',
+      campo: 'cpf',
+      cabecalho: 'CPF',
+      alinhamento: 'left'
     },
     {
       campo: 'ativo',
@@ -50,85 +50,49 @@ export default function Cao() {
     }
   ]
 
-  const ResetDados: CaoInterface = {
-    idCao: 0,
+  const ResetDados: AtletaInterface = {
+    idAtleta: 0,
     avatar: '',
     nome: '',
-    categoria: 0,
-    pedigree: 0,
-    raca: 0,
-    genero: '',
+    telefone: '',
+    email: '',
     nascimento: new Date(),
-    vacina: new Date(),
+    cpf: '',
+    escola: 0,
     ativo: false,
   }
 
   const { mensagemState, setMensagemState } = useContext(GlobalContext) as GlobalContextInterface
   const [localState, setLocalState] = useState<ActionInterface>({ action: actionTypes.pesquisando })
-  const [rsPesquisa, setRsPesquisa] = useState<Array<CaoInterface>>([])
+  const [rsPesquisa, setRsPesquisa] = useState<Array<AtletaInterface>>([])
   const [pesquisa, setPesquisa] = useState<PesquisaInterface>({ nome: '' })
-  const [cao, setCao] = useState<CaoInterface>(ResetDados)
+  const [atleta, setAtleta] = useState<AtletaInterface>(ResetDados)
   const [erros, setErros] = useState({})
-  const pedigrees = ['Azul', 'Branco', 'Rosa', 'Sem Pedrigree']
-  const racasDeCaes = [
-    "Akita Inu",
-    "Basset Hound",
-    "Beagle",
-    "Bichon Frisé",
-    "Border Collie",
-    "Boxer",
-    "Bulldog Francês",
-    "Bulldog Inglês",
-    "Bull Terrier",
-    "Cavalier King Charles Spaniel",
-    "Chihuahua",
-    "Chow Chow",
-    "Cocker Spaniel",
-    "Dachshund (Cofap/Teckel)",
-    "Dálmata",
-    "Doberman",
-    "Golden Retriever",
-    "Husky Siberiano",
-    "Labrador Retriever",
-    "Lhasa Apso",
-    "Maltese",
-    "Poodle",
-    "Pomeranian",
-    "Pug",
-    "Rottweiler",
-    "Schnauzer Miniatura",
-    "Shih Tzu",
-    "Staffordshire Bull Terrier",
-    "Yorkshire Terrier"
-  ];
+  const escolas = ['Cia & Cão', 'TamborDog', 'Sem Escola']
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof any>('nome');
+  const [orderBy, setOrderBy] = useState<keyof any>('name');
 
-  const handleChangePedigree = (event: SelectChangeEvent) => {
-    let ped: number = parseInt(event.target.value as string)
-    setCao({ ...cao, pedigree: ped })
+  const handleChangeEscola = (event: SelectChangeEvent) => {
+    let escola: number = parseInt(event.target.value as string)
+    setAtleta({ ...atleta, escola: escola })
   };
 
-  const handleChangeRaca = (event: SelectChangeEvent) => {
-    let raca: number = parseInt(event.target.value as string)
-    setCao({ ...cao, raca: raca })
-  };
-  const btEditar = (rs: CaoInterface) => {
-    setCao(rs)
+  const btEditar = (rs: AtletaInterface) => {
+    setAtleta(rs)
     setLocalState({ action: actionTypes.editando })
   }
-  const btExcluir = (rs: CaoInterface) => {
-    setCao(rs)
+  const btExcluir = (rs: AtletaInterface) => {
+    setAtleta(rs)
     setLocalState({ action: actionTypes.excluindo })
   }
   const btIncluir = () => {
     setErros({})
-    setCao(ResetDados)
+    setAtleta(ResetDados)
     setLocalState({ action: actionTypes.incluindo })
   }
   const btCancelar = () => {
     setErros({})
-    setCao(ResetDados)
+    setAtleta(ResetDados)
     setLocalState({ action: actionTypes.pesquisando })
   }
 
@@ -136,9 +100,29 @@ export default function Cao() {
     let retorno: boolean = true
     let erros: { [key: string]: string } = {}
 
-    if (validaCampo.campoVazio(cao.nome)) {
+    if (validaCampo.campoVazio(atleta.nome)) {
       retorno = false
-      erros.name = 'Nome Não pode ser Vazio!'
+      erros.nome = 'Nome Não pode ser Vazio!'
+    }
+    if (!validaCampo.eTEL(atleta.telefone)) {
+      retorno = false
+      erros.telefone = 'Telefone inválido!'
+    }
+    if (!validaCampo.eEMAIL(atleta.email)) {
+      retorno = false
+      erros.email = 'E-mail inválido!'
+    }
+    if (!atleta.nascimento) {
+      retorno = false
+      erros.nascimento = 'Data de Nascimento inválida!'
+    }
+    if (!atleta.escola) {
+      retorno = false
+      erros.cidade = 'Defina uma Escola!'
+    }
+    if (!validaCampo.eCPF(atleta.cpf)) {
+      retorno = false
+      erros.cpf = 'CPF inválido!'
     }
     setErros(erros)
     return retorno
@@ -149,22 +133,22 @@ export default function Cao() {
     if (validarDados()) {
       let msg1: string = ''
       let msg2: string = ''
-      let msg3: string = 'Cadastro de Pessoas não atualizado!'
-      let url_ativa: string = '/cao/'.concat(cao.idCao.toString())
-      let body: any = cao
+      let msg3: string = 'Cadastro de Atletas não atualizado!'
+      let url_ativa: string = '/atleta/'.concat(atleta.idAtleta.toString())
+      let body: any = atleta
 
       if (localState.action === actionTypes.incluindo) {
-        msg1 = 'Incluíndo dados do Cão...'
-        msg2 = 'Cão cadastrado com sucesso!'
-        url_ativa = '/cao'
+        msg1 = 'Incluíndo dados em Atleta...'
+        msg2 = 'Atleta cadastrado com sucesso!'
+        url_ativa = '/atleta'
       } else if (localState.action === actionTypes.excluindo) {
-        msg1 = 'Excluíndo Cão do cadastro ...'
-        msg2 = 'Cão excluído com sucesso!'
-        msg3 = 'Cão não excluído!'
+        msg1 = 'Excluíndo Atleta do cadastro ...'
+        msg2 = 'Atleta excluído com sucesso!'
+        msg3 = 'Atleta não excluído!'
         body = ''
       } else if (localState.action === actionTypes.editando) {
-        msg1 = 'Editando dados do cão...'
-        msg2 = 'Cão alterado com sucesso!'
+        msg1 = 'Editando dados do Atleta...'
+        msg2 = 'Atleta alterado com sucesso!'
       }
 
       api.query<any>(url_ativa, body, msg1, mensagemState, setMensagemState, localState)
@@ -178,7 +162,7 @@ export default function Cao() {
             exibirBotao: true,
             cb: () => btPesquisar()
           })
-          setCao(ResetDados)
+          setAtleta(ResetDados)
           setLocalState({ action: 'pesquisando' })
         }).catch(() => {
 
@@ -196,7 +180,7 @@ export default function Cao() {
   const btPesquisar = () => {
 
     setTimeout(() => {
-      api.pesq<any>('/cao?name_like='.concat(pesquisa.nome), 'Recebendo Cães ...', mensagemState, setMensagemState)
+      api.pesq<any>('/atleta?name_like='.concat(pesquisa.nome), 'Recebendo Atletas ...', mensagemState, setMensagemState)
         .then(rs => {
           setRsPesquisa(rs)
           setMensagemState({
@@ -240,10 +224,10 @@ export default function Cao() {
           <Grid container spacing={1.2} sx={{ display: 'flex', alignItems: 'center' }}>
 
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography component="h5" variant="h5" align='left'>
-                Cadastro de Cães
+              <Typography component="h5" variant="h5" align="left">
+                Cadastro de Atletas
                 <Typography variant="body2" gutterBottom>
-                  Informações detalhadas dos Cães
+                  Ficha com os dados cadastrais do Atleta
                 </Typography>
               </Typography>
 
@@ -254,7 +238,7 @@ export default function Cao() {
             <Condicional condicao={localState.action === 'pesquisando'}>
               <Grid item xs={12} sm={10} sx={{ mb: 3 }}>
                 <Text
-                  label="Digite o nome do cão"
+                  label="Digite o nome"
                   tipo="text"
                   dados={pesquisa}
                   field="nome"
@@ -274,126 +258,106 @@ export default function Cao() {
               <Grid item xs={12} sm={12}>
                 <Stack direction="row" spacing={2} >
                   <Avatar
-                    alt={cao.nome}
-                    src={cao.avatar}
+                    alt={atleta.nome}
+                    src={atleta.avatar}
                     sx={{ margin: '0 auto', width: 56, height: 56 }} />
                 </Stack>
               </Grid>
-              <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={3}>
                 <Text
-                  label="Nome"
-                  tipo="text"
-                  dados={cao}
-                  field="nome"
-                  setState={setCao}
+                  label="CPF"
+                  tipo="mask"
+                  dados={atleta}
+                  field="cpf"
+                  setState={setAtleta}
                   disabled={localState.action === 'excluindo' ? true : false}
                   erros={erros}
                   autofocus
                 />
               </Grid>
-              <Grid item xs={12} sm={4} >
+              <Grid item xs={12} sm={7}>
                 <Text
-                  label="Ativo"
-                  tipo="checkbox"
-                  dados={cao}
-                  field="ativo"
-                  setState={setCao}
+                  label="Nome"
+                  tipo="text"
+                  dados={atleta}
+                  field="nome"
+                  setState={setAtleta}
                   disabled={localState.action === 'excluindo' ? true : false}
                   erros={erros}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl >
-                  <FormLabel id="demo-radio-buttons-group-label" >Gênero</FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="F"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel value="F" control={<Radio />} label="Fêmea" />
-                    <FormControlLabel value="M" control={<Radio />} label="Macho" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl >
-                  <FormLabel id="demo-radio-buttons-group-label" >Categoria</FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="G"
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel value="P" control={<Radio />} label="(P) Mini < 35 cm" />
-                    <FormControlLabel value="M" control={<Radio />} label="(M) Medio de 35 a < 43 cm" />
-                    <FormControlLabel value="G" control={<Radio />} label="(G) Padrão > 43 cm" />
-                    <FormControlLabel value="BC" control={<Radio />} label="(BC) Border Collie" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6} sx={{ my: 2 }}>
-                <Box>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Pedigree</InputLabel>
-                    <Select
-                      sx={{ my: 0, py: 0, height: 40 }}
-                      disabled={localState.action === 'excluindo' ? true : false}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={cao.pedigree.toString()}
-                      label="Pedigree"
-                      onChange={handleChangePedigree}
-                      required
-                    >
-                      {pedigrees.map((pedigree, i) => (
-                        <MenuItem key={i} value={i}>{pedigree}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6} sx={{ my: 2 }}>
-                <Box>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Raças</InputLabel>
-                    <Select
-                      sx={{ my: 0, py: 0, height: 40 }}
-                      disabled={localState.action === 'excluindo' ? true : false}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={cao.raca.toString()}
-                      label="Raças"
-                      onChange={handleChangeRaca}
-                      required
-                    >
-                      {racasDeCaes.map((raca, i) => (
-                        <MenuItem key={i} value={i}>{raca}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
+              <Grid item xs={12} sm={2}>
+                <Text
+                  label="Ativo"
+                  tipo="checkbox"
+                  dados={atleta}
+                  field="ativo"
+                  setState={setAtleta}
+                  disabled={localState.action === 'excluindo' ? true : false}
+                  erros={erros}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Text
                   label="Nascimento"
                   type='date'
-                  dados={cao}
+                  dados={atleta}
                   field="nascimento"
-                  setState={setCao}
+                  setState={setAtleta}
                   disabled={localState.action === 'excluindo' ? true : false}
                   erros={erros}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Text
-                  label="Vencimento Vacina"
-                  type='date'
-                  dados={cao}
-                  field="vacina"
-                  setState={setCao}
+                  label="Telefone"
+                  type="text"
+                  dados={atleta}
+                  field="telefone"
+                  setState={setAtleta}
                   disabled={localState.action === 'excluindo' ? true : false}
                   erros={erros}
                 />
               </Grid>
+              <Grid item xs={12} sm={6}>
+                <Text
+                  label="E-mail"
+                  type="text"
+                  dados={atleta}
+                  field="email"
+                  setState={setAtleta}
+                  disabled={localState.action === 'excluindo' ? true : false}
+                  erros={erros}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ my: 2 }}>
+                <Box>
+                  <FormControl fullWidth>
+                    <Typography
+                      variant='body2'
+                      textAlign='left'
+                      sx={{ mt: 1 }}
+                    >
+                      Escola
+                    </Typography>
+                    <Select
+                      sx={{ my: 0, py: 0, height: 40 }}
+                      disabled={localState.action === 'excluindo' ? true : false}
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={atleta.escola.toString()}
+                      // label="Escola"
+                      onChange={handleChangeEscola}
+                      required
+                    >
+                      {escolas.map((escola, i) => (
+                        <MenuItem key={i} value={i}>{escola}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Grid>
+
             </Condicional>
 
             <Condicional condicao={localState.action === 'incluindo'}>

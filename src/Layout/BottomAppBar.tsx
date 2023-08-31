@@ -17,8 +17,34 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { GlobalContext, GlobalContextInterface } from '../Context/GlobalContext';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@mui/material';
 
-const settings = ['Atleta', 'Cão', 'Duplas', 'Provas'];
+const settingsJSON = [
+  {
+    "id": 1,
+    "menu": "Atleta",
+    "icon": "person_outline_outlined",
+    "path": "/Atleta"
+  },
+  {
+    "id": 2,
+    "menu": "Cão",
+    "icon": "pets",
+    "path": "/Cao"
+  },
+  {
+    "id": 3,
+    "menu": "Calendário",
+    "icon": "event_available",
+    "path": "/Ordem"
+  },
+  {
+    "id": 4,
+    "menu": "Etapas Realizadas",
+    "icon": "military_tech",
+    "path": "/Home"
+  },
+]
 const StyledFab = styled(Fab)({
   position: 'absolute',
   zIndex: 1,
@@ -26,6 +52,7 @@ const StyledFab = styled(Fab)({
   left: 0,
   right: 0,
   margin: '0 auto',
+  color: 'white',
 });
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
@@ -33,7 +60,6 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 export default function BottomAppBar() {
 
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
-  const { layoutState, setLayoutState } = React.useContext(GlobalContext) as GlobalContextInterface
   const { mensagemState, setMensagemState } = React.useContext(GlobalContext) as GlobalContextInterface
   const navigate = useNavigate()
 
@@ -46,13 +72,7 @@ export default function BottomAppBar() {
   }
 
   const irPara = (url: string) => {
-    if (url === 'Cão') {
-      navigate('Cao')
-    } else if (url === 'Atleta') {
-      navigate('Person')
-    } else if (url === 'Dash') {
-      navigate('Home')
-    }
+    navigate(url)
     setAnchorElUser(null);
   }
 
@@ -65,11 +85,11 @@ export default function BottomAppBar() {
       <Offset />
       <AppBar onLoad={fecharLoading} position="fixed" color='default' sx={{ top: 'auto', bottom: 0 }}>
         <Toolbar>
-          <IconButton color="primary" aria-label="Dashboard" id="Dashboard" onClick={() => irPara('Dash')}>
+          <IconButton color="primary" aria-label="Dashboard" id="Dashboard" onClick={() => irPara('/Home')}>
             <LeaderboardIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <Box sx={{ flexGrow: 0.25 }} />
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => irPara('/Home')}>
             <SearchIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <StyledFab color="primary" aria-label="add">
@@ -93,18 +113,19 @@ export default function BottomAppBar() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={() => irPara(setting)}>
-                <Typography textAlign="center">{setting}</Typography>
+            {settingsJSON.map((setting) => (
+              <MenuItem key={setting.id} onClick={() => irPara(setting.path)}>
+                <Icon sx={{ textAlign: 'center', marginRight: 1 }}>{setting.icon}</Icon>
+                <Typography textAlign="center">{setting.menu}</Typography>
               </MenuItem>
             ))}
           </Menu>
           <Box sx={{ flexGrow: 0.5 }} />
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => irPara('/Home')}>
             <CalendarMonthIcon sx={{ width: 32, height: 32 }} />
           </IconButton>
           <Box sx={{ flexGrow: 0.25 }} />
-          <IconButton color="primary">
+          <IconButton color="primary" onClick={() => irPara('/Person')}>
             <Avatar
               alt="Foto do Usuário"
               src="img/avatar.jpg"

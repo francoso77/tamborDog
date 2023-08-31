@@ -89,7 +89,7 @@ export default function Text({
     return (
       <>
         <FormControlLabel
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', margin: '0 auto' }}
           label={label}
           labelPlacement='top'
           control={

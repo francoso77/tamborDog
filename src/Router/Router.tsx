@@ -7,6 +7,7 @@ import ErroNavegacao from '../Layout/ErroNavegacao';
 import Layout from '../Layout/Layout';
 import Ordem from '../views/Ordem/Ordem';
 import Cao from '../views/Cao';
+import Atleta from '../views/Atleta/Index';
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,11 @@ export const router = createBrowserRouter([
       {
         path: "person",
         element: <Person />,
+        errorElement: <ErroAplicacao />
+      },
+      {
+        path: "atleta",
+        element: <Atleta />,
         errorElement: <ErroAplicacao />
       },
       {
